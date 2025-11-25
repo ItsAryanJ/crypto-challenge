@@ -193,10 +193,18 @@ static void play_single_round(int roundNumber, Challenge* r, int* score, int* pa
     }
 
     printf("Task: %s\n", r->isEncrypt ? "Encrypt" : "Decrypt");
-    printf("Plaintext:  %s\n", r->plaintext);
+
+    if (r->isEncrypt) {
+        // Only show plaintext for encryption task
+        printf("Plaintext:  %s\n", r->challengeText);
+    }
+     else {
+        // Only show ciphertext for decryption task
+        printf("Ciphertext: %s\n", r->challengeText);
+    }
     printf("Key:        %s\n", r->key);
-    printf("Challenge:  %s\n", r->challengeText);
     printf("Time Limit: %d seconds\n\n", r->timeLimit);
+
 
     printf("Your Answer: ");
     char answer[MAX_TEXT];
@@ -212,20 +220,20 @@ static void play_single_round(int roundNumber, Challenge* r, int* score, int* pa
     int taken = (int)(end - start);
 
     if (taken > r->timeLimit) {
-        printf("\n⛔ Time's up! You took %d seconds.\n", taken);
+        printf("\nTime's up! You took %d seconds.\n", taken);
         printf("Correct Answer: %s\n", r->expectedAnswer);
         *score -= 10;
         return;
     }
 
     if (strcmp(answer, r->expectedAnswer) == 0) {
-        printf("\n✔ Correct! (%d sec)\n", taken);
+        printf("\nCorrect! (%d sec)\n", taken);
         *score += 100;
         if (taken < r->timeLimit / 2)
             *score += 20; // speed bonus
         (*passCount)++;
     } else {
-        printf("\n✘ Wrong.\n");
+        printf("\nWrong.\n");
         printf("Correct: %s\n", r->expectedAnswer);
         *score -= 10;
     }
